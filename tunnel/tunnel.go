@@ -420,6 +420,14 @@ func match(metadata *C.Metadata) (C.Proxy, C.Rule, error) {
 				continue
 			}
 
+			if adapter.Type() == C.PassThrough {
+				continue
+			}
+			p := adapter.Unwrap(metadata)
+			if p != nil && p.Type() == C.PassThrough {
+				continue
+			}
+
 			if metadata.NetWork == C.UDP && !adapter.SupportUDP() && UDPFallbackMatch.Load() {
 				log.Debugln("[Matcher] %s UDP is not supported, skip match", adapter.Name())
 				continue
